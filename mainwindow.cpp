@@ -46,7 +46,7 @@ void MainWindow::on_action_Open_triggered()
     QFile file(fileName);
 
     if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
-        QMessageBox::warning( this, tr("Editor"), tr("File could not be opened") );
+        QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
         return;
     }
 

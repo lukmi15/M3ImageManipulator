@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define APPLICATION_NAME "Image Manipulator"
+#define APPLICATION_NAME "ImageManipulator"
 
 #include <QMainWindow>
 #include <QtCore>
