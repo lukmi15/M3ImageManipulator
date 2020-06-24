@@ -3,12 +3,10 @@
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), isModified(false), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    // connect(ui->scrollArea->document(), SIGNAL(modificationChanged(bool)), this, SLOT(setModified(bool)));
-    ui->scrollArea->setBackgroundRole(QPalette::Dark);
-    applyZoom(1);
+	ui->setupUi(this);
+	ui->scrollArea->setBackgroundRole(QPalette::Dark);
 }
 
 void MainWindow::applyZoom()
@@ -24,22 +22,22 @@ void MainWindow::applyZoom(float newZoomFactor)
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
 bool MainWindow::maybeSave()
 {
-    if (this->isModified)
-    {
-        auto ret = QMessageBox::warning(this, APPLICATION_NAME, "The file was modified\nDo you want to save it?", QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        if (ret==QMessageBox::Save)
-            save();
-        else if (ret==QMessageBox::Discard)
-            return true;
-	else // QMessageBox::Cancel
-            return false;
-    }
-    return true;
+	if (this->modified)
+	{
+		auto ret = QMessageBox::warning(this, APPLICATION_NAME, MODIFICATION_WARNING, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+		if (ret == QMessageBox::Save)
+			save();
+		else if (ret == QMessageBox::Discard)
+			return true;
+		else
+			return false;
+	}
+	return true;
 }
 
 void MainWindow::save()
@@ -59,35 +57,27 @@ void MainWindow::on_actionAboutQt_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-	QMessageBox::about(this, tr("About " APPLICATION_NAME), tr("Created by Lukas Mirow on TODO<br>Created using Qt (see Help -> About Qt)"));
+	QMessageBox::about(this, tr("About " APPLICATION_NAME), tr(ABOUT_TEXT));
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
-    if(!maybeSave())
-        return;
-
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file for edit") );
-    openFile(fileName);
-
-    // if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
-    //     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
-    //     return;
-    // }
-
+	if(!maybeSave())
+		return;
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open file for edit") );
+	openFile(fileName);
+	// if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
+	//     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
+	//     return;
+	// }
 }
-
-void MainWindow::setModified(bool modified)
-{
-    this->isModified = modified;
-}
-
 
 void MainWindow::on_actionNew_triggered()
 {
     if(!maybeSave())
         return;
-    // ui->scrollArea->clear();
+    pixmap = QPixmap(0, 0);
+    applyZoom(1);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -110,7 +100,6 @@ void MainWindow::on_actionPrint_triggered()
 void MainWindow::openFile(QString fname)
 {
 	img = QImage(fname);
-	//QPixmap pm = ui->picLabel->pixmap(Qt::ReturnByValue);
 	pixmap = QPixmap::fromImage(img);
 	applyZoom(1);
 };
@@ -147,13 +136,24 @@ void MainWindow::on_actionZoomFit_triggered()
 {
 	applyZoom(calcFittingZoom());
 }
-/*
-   void ImageViewer::fitToWindow()
+
+void MainWindow::on_actionPaste_triggered()
 {
-    bool fitToWindow = fitToWindowAct->isChecked();
-    scrollArea->setWidgetResizable(fitToWindow);
-    if (!fitToWindow)
-        normalSize();
-    updateActions();
+	QPixmap cPixmap = QGuiApplication::clipboard()->pixmap();
+	if (!cPixmap.isNull())
+	{
+		pixmap = cPixmap;
+		applyZoom(1);
+	}
 }
-*/
+
+void MainWindow::on_actionCopy_triggered()
+{
+	QGuiApplication::clipboard()->setPixmap(pixmap);
+}
+
+void MainWindow::on_actionCut_triggered()
+{
+	on_actionCopy_triggered();
+	on_actionNew_triggered();
+}

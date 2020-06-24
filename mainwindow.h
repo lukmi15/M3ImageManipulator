@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #define APPLICATION_NAME "ImageManipulator"
+#define MODIFICATION_WARNING "The image was modified, do you want to save it?"
+#define ABOUT_TEXT "Created by Lukas Mirow on TODO<br>Created using Qt (see Help -> About Qt)"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -9,6 +11,7 @@
 #include <QtWidgets>
 #include <QtPrintSupport>
 #include <algorithm>
+#include <QClipboard>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class MainWindow;}
@@ -29,7 +32,6 @@ class MainWindow : public QMainWindow
 	private slots:
 		void on_actionExit_triggered();
 		void on_actionOpen_triggered();
-		void setModified(bool modified);
 		void on_actionNew_triggered();
 		void on_actionPrint_triggered();
 		void on_actionAbout_triggered();
@@ -38,13 +40,16 @@ class MainWindow : public QMainWindow
 		void on_actionZoomOut_triggered();
 		void on_actionZoomOriginal_triggered();
 		void on_actionZoomFit_triggered();
+		void on_actionCopy_triggered();
+		void on_actionPaste_triggered();
+		void on_actionCut_triggered();
 
 	private:
-		bool isModified;
+		bool modified = false;
 		Ui::MainWindow *ui;
 		void openFile(QString);
 		void dropEvent(QDropEvent*);
-		float zoomFactor;
+		float zoomFactor = 1;
 		QImage img;
 		void applyZoom(float);
 		void applyZoom();
