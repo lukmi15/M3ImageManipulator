@@ -52,9 +52,14 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
+void MainWindow::on_actionAboutQt_triggered()
+{
+	QMessageBox::aboutQt(this, tr("About Qt"));
+}
+
 void MainWindow::on_actionAbout_triggered()
 {
-	QMessageBox::about(this, tr("About " APPLICATION_NAME), tr("Created by Lukas Mirow on TODO"));
+	QMessageBox::about(this, tr("About " APPLICATION_NAME), tr("Created by Lukas Mirow on TODO<br>Created using Qt (see Help -> About Qt)"));
 }
 
 void MainWindow::on_actionOpen_triggered()

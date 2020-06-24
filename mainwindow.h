@@ -33,6 +33,7 @@ class MainWindow : public QMainWindow
 		void on_actionNew_triggered();
 		void on_actionPrint_triggered();
 		void on_actionAbout_triggered();
+		void on_actionAboutQt_triggered();
 		void on_actionZoomIn_triggered();
 		void on_actionZoomOut_triggered();
 		void on_actionZoomOriginal_triggered();
