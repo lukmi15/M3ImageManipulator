@@ -11,10 +11,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), isModified(false)
     applyZoom(1);
 }
 
+void MainWindow::applyZoom()
+{
+	ui->picLabel->setPixmap(pixmap.scaled(pixmap.size() * zoomFactor, Qt::KeepAspectRatio));
+}
+
 void MainWindow::applyZoom(float newZoomFactor)
 {
 	zoomFactor = newZoomFactor;
-	ui->picLabel->resize(zoomFactor * ui->picLabel->pixmap(Qt::ReturnByValue).size());
+	applyZoom();
 }
 
 MainWindow::~MainWindow()
@@ -99,9 +104,10 @@ void MainWindow::on_actionPrint_triggered()
 
 void MainWindow::openFile(QString fname)
 {
-    img = QImage(fname);
-    ui->picLabel->setPixmap(QPixmap::fromImage(img));
-    applyZoom(1);
+	img = QImage(fname);
+	//QPixmap pm = ui->picLabel->pixmap(Qt::ReturnByValue);
+	pixmap = QPixmap::fromImage(img);
+	applyZoom(1);
 };
 
 void MainWindow::dropEvent(QDropEvent *event)
@@ -111,12 +117,12 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::on_actionZoomIn_triggered()
 {
-	applyZoom(zoomFactor + 0.1);
+	applyZoom(zoomFactor * 1.1);
 }
 
 void MainWindow::on_actionZoomOut_triggered()
 {
-	applyZoom(zoomFactor - 0.1);
+	applyZoom(zoomFactor * 0.9);
 }
 
 void MainWindow::on_actionZoomOriginal_triggered()
@@ -124,13 +130,17 @@ void MainWindow::on_actionZoomOriginal_triggered()
 	applyZoom(1);
 }
 
-void MainWindow::on_actionZoomFit_triggered()
+float MainWindow::calcFittingZoom()
 {
 	QSize imageSize = ui->picLabel->size();
 	QSize widgetSize = ui->scrollArea->size();
-	float newZoom = min((float)imageSize.width() / (float)widgetSize.width(), (float)imageSize.height() / (float)widgetSize.height());
-	qInfo() << "newZoom is " << newZoom << Qt::endl;
-	applyZoom(newZoom);
+	float newZoom = min((float)widgetSize.width() / (float)imageSize.width(), (float)widgetSize.height() / (float)imageSize.height());
+	return newZoom - 0.02; //HACK: There seems to be a padding in `scrollArea`, TODO
+}
+
+void MainWindow::on_actionZoomFit_triggered()
+{
+	applyZoom(calcFittingZoom());
 }
 /*
    void ImageViewer::fitToWindow()

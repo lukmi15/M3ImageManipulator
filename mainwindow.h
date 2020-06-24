@@ -46,6 +46,9 @@ class MainWindow : public QMainWindow
 		float zoomFactor;
 		QImage img;
 		void applyZoom(float);
+		void applyZoom();
+		QPixmap pixmap;
+		float calcFittingZoom();
 
 };
 
