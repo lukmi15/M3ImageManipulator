@@ -1,10 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), isModified(false), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->textEdit->document(), SIGNAL(modificationChanged(bool)), this, SLOT(setModified(bool)));
+    // connect(ui->scrollArea->document(), SIGNAL(modificationChanged(bool)), this, SLOT(setModified(bool)));
+    ui->scrollArea->setBackgroundRole(QPalette::Dark);
+    applyZoom(1);
+}
+
+void MainWindow::applyZoom(float newZoomFactor)
+{
+	zoomFactor = newZoomFactor;
+	ui->picLabel->resize(zoomFactor * ui->picLabel->pixmap(Qt::ReturnByValue).size());
 }
 
 MainWindow::~MainWindow()
@@ -32,27 +42,29 @@ void MainWindow::save()
     // TODO
 }
 
-void MainWindow::on_actionE_xit_triggered()
+void MainWindow::on_actionExit_triggered()
 {
     QApplication::quit();
 }
 
-void MainWindow::on_action_Open_triggered()
+void MainWindow::on_actionAbout_triggered()
+{
+	QMessageBox::about(this, tr("About " APPLICATION_NAME), tr("Created by Lukas Mirow on TODO"));
+}
+
+void MainWindow::on_actionOpen_triggered()
 {
     if(!maybeSave())
         return;
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open file for edit") );
-    QFile file(fileName);
+    openFile(fileName);
 
-    if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
-        QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
-        return;
-    }
+    // if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
+    //     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
+    //     return;
+    // }
 
-    QTextStream in(&file);
-    QString text = in.readAll();
-    ui->textEdit->setText(text);
 }
 
 void MainWindow::setModified(bool modified)
@@ -61,11 +73,11 @@ void MainWindow::setModified(bool modified)
 }
 
 
-void MainWindow::on_action_New_triggered()
+void MainWindow::on_actionNew_triggered()
 {
     if(!maybeSave())
         return;
-    ui->textEdit->clear();
+    // ui->scrollArea->clear();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -76,11 +88,57 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
 }
 
-void MainWindow::on_action_Print_triggered()
+void MainWindow::on_actionPrint_triggered()
 {
     QPrinter printer;
     QPrintDialog printDialog(&printer, this);
     if (printDialog.exec() == QDialog::Rejected)
         return;
-    ui->textEdit->print(&printer);
+    // ui->scrollArea->print(&printer);
 }
+
+void MainWindow::openFile(QString fname)
+{
+    img = QImage(fname);
+    ui->picLabel->setPixmap(QPixmap::fromImage(img));
+    applyZoom(1);
+};
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+	openFile(event->mimeData()->urls()[0].fileName()); //TODO: Test
+}
+
+void MainWindow::on_actionZoomIn_triggered()
+{
+	applyZoom(zoomFactor + 0.1);
+}
+
+void MainWindow::on_actionZoomOut_triggered()
+{
+	applyZoom(zoomFactor - 0.1);
+}
+
+void MainWindow::on_actionZoomOriginal_triggered()
+{
+	applyZoom(1);
+}
+
+void MainWindow::on_actionZoomFit_triggered()
+{
+	QSize imageSize = ui->picLabel->size();
+	QSize widgetSize = ui->scrollArea->size();
+	float newZoom = min((float)imageSize.width() / (float)widgetSize.width(), (float)imageSize.height() / (float)widgetSize.height());
+	qInfo() << "newZoom is " << newZoom << Qt::endl;
+	applyZoom(newZoom);
+}
+/*
+   void ImageViewer::fitToWindow()
+{
+    bool fitToWindow = fitToWindowAct->isChecked();
+    scrollArea->setWidgetResizable(fitToWindow);
+    if (!fitToWindow)
+        normalSize();
+    updateActions();
+}
+*/
