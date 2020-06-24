@@ -4,6 +4,7 @@
 #define APPLICATION_NAME "ImageManipulator"
 #define MODIFICATION_WARNING "The image was modified, do you want to save it?"
 #define ABOUT_TEXT "Created by Lukas Mirow on TODO<br>Created using Qt (see Help -> About Qt)"
+#define FILE_FILTER "Images (*.png *.bmp *.jpg, *.jpeg)"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -12,6 +13,7 @@
 #include <QtPrintSupport>
 #include <algorithm>
 #include <QClipboard>
+#include <sstream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class MainWindow;}
@@ -48,13 +50,17 @@ class MainWindow : public QMainWindow
 		bool modified = false;
 		Ui::MainWindow *ui;
 		void openFile(QString);
+		void openFile();
 		void dropEvent(QDropEvent*);
+		void dragEnterEvent(QDragEnterEvent*);
 		float zoomFactor = 1;
 		QImage img;
 		void applyZoom(float);
 		void applyZoom();
 		QPixmap pixmap;
 		float calcFittingZoom();
+		void loadPixmap(const QPixmap&);
+		void loadPixmap(const QImage&);
 
 };
 

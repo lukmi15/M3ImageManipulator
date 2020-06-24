@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
 	ui->setupUi(this);
 	ui->scrollArea->setBackgroundRole(QPalette::Dark);
+	setAcceptDrops(true);
 }
 
 void MainWindow::applyZoom()
@@ -16,7 +17,12 @@ void MainWindow::applyZoom()
 
 void MainWindow::applyZoom(float newZoomFactor)
 {
-	zoomFactor = newZoomFactor;
+	if (newZoomFactor > 4)
+		zoomFactor = 4;
+	else if (newZoomFactor < .25)
+		zoomFactor = .25;
+	else
+		zoomFactor = newZoomFactor;
 	applyZoom();
 }
 
@@ -62,22 +68,12 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-	if(!maybeSave())
-		return;
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open file for edit") );
-	openFile(fileName);
-	// if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
-	//     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
-	//     return;
-	// }
+	openFile();
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    if(!maybeSave())
-        return;
-    pixmap = QPixmap(0, 0);
-    applyZoom(1);
+    loadPixmap(QPixmap(0, 0));
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -97,16 +93,42 @@ void MainWindow::on_actionPrint_triggered()
     // ui->scrollArea->print(&printer);
 }
 
+void MainWindow::openFile()
+{
+	openFile(QFileDialog::getOpenFileName(this, tr("Open file for edit"), "", FILE_FILTER));
+}
+
 void MainWindow::openFile(QString fname)
 {
-	img = QImage(fname);
-	pixmap = QPixmap::fromImage(img);
-	applyZoom(1);
+	if(!maybeSave())
+		return;
+	loadPixmap(QImage(fname));
+	// if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
+	//     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
+	//     return;
+	// }
 };
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-	openFile(event->mimeData()->urls()[0].fileName()); //TODO: Test
+	const QMimeData *md = event->mimeData();
+	if (md->hasImage())
+		loadPixmap(qvariant_cast<QImage>(md->imageData()));
+	else if (md->hasUrls())
+		openFile(md->urls()[0].fileName());
+	else
+	{
+		// stringstream ss;
+		// ss << "The content could not be loaded from clipboard because \"" << md->text() << "\" was not understood.";
+		// QMessageBox::warning(this, APPLICATION_NAME, tr(ss.str()));
+	}
+	event->acceptProposedAction();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasImage() or event->mimeData()->hasUrls())
+		event->acceptProposedAction();
 }
 
 void MainWindow::on_actionZoomIn_triggered()
@@ -126,10 +148,14 @@ void MainWindow::on_actionZoomOriginal_triggered()
 
 float MainWindow::calcFittingZoom()
 {
-	QSize imageSize = ui->picLabel->size();
+	QSize imageSize = ui->picLabel->size() / zoomFactor;
 	QSize widgetSize = ui->scrollArea->size();
 	float newZoom = min((float)widgetSize.width() / (float)imageSize.width(), (float)widgetSize.height() / (float)imageSize.height());
-	return newZoom - 0.02; //HACK: There seems to be a padding in `scrollArea`, TODO
+	/*FIXME: This calculation doesn't work if the image is smaller than the widget (tested with the Corona picture)
+	qDebug() << "Widget size: " << widgetSize.width() << 'x' << widgetSize.height() << Qt::endl;
+	qDebug() << "Image size: " << imageSize.width() << 'x' << imageSize.height() << Qt::endl;
+	qDebug() << "New zoom is " << newZoom << Qt::endl;*/
+	return newZoom;// - 0.02; //HACK: There seems to be a padding in `scrollArea`, TODO
 }
 
 void MainWindow::on_actionZoomFit_triggered()
@@ -142,14 +168,25 @@ void MainWindow::on_actionPaste_triggered()
 	QPixmap cPixmap = QGuiApplication::clipboard()->pixmap();
 	if (!cPixmap.isNull())
 	{
-		pixmap = cPixmap;
-		applyZoom(1);
+		loadPixmap(cPixmap);
 	}
 }
 
 void MainWindow::on_actionCopy_triggered()
 {
 	QGuiApplication::clipboard()->setPixmap(pixmap);
+}
+
+void MainWindow::loadPixmap(const QImage& img)
+{
+	qDebug() << img.isNull() << ' ' << img.width() << ' ' << img.height() << Qt::endl;
+	loadPixmap(QPixmap::fromImage(img));
+}
+
+void MainWindow::loadPixmap(const QPixmap& pm)
+{
+	pixmap = pm;
+	applyZoom(1);
 }
 
 void MainWindow::on_actionCut_triggered()
