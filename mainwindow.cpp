@@ -109,19 +109,23 @@ void MainWindow::openFile(QString fname)
 	// }
 };
 
+void MainWindow::signalLoadError(const QString& reason)
+{
+	QString msg("The content could not be loaded because ");
+	msg.append(reason);
+	QMessageBox::critical(this, APPLICATION_NAME, tr(msg.toStdString().c_str()));
+}
+
 void MainWindow::dropEvent(QDropEvent *event)
 {
 	const QMimeData *md = event->mimeData();
 	if (md->hasImage())
-		loadPixmap(qvariant_cast<QImage>(md->imageData()));
-	else if (md->hasUrls())
-		openFile(md->urls()[0].fileName());
-	else
 	{
-		// stringstream ss;
-		// ss << "The content could not be loaded from clipboard because \"" << md->text() << "\" was not understood.";
-		// QMessageBox::warning(this, APPLICATION_NAME, tr(ss.str()));
+		QImage img = qvariant_cast<QImage>(md->imageData());
+		loadPixmap(img);
 	}
+	else
+		openFile(md->urls()[0].toLocalFile());
 	event->acceptProposedAction();
 }
 
@@ -179,14 +183,18 @@ void MainWindow::on_actionCopy_triggered()
 
 void MainWindow::loadPixmap(const QImage& img)
 {
-	qDebug() << img.isNull() << ' ' << img.width() << ' ' << img.height() << Qt::endl;
 	loadPixmap(QPixmap::fromImage(img));
 }
 
 void MainWindow::loadPixmap(const QPixmap& pm)
 {
-	pixmap = pm;
-	applyZoom(1);
+	if (pm.isNull())
+		signalLoadError("it does not appear to contain an image");
+	else
+	{
+		pixmap = pm;
+		applyZoom(1);
+	}
 }
 
 void MainWindow::on_actionCut_triggered()

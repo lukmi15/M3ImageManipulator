@@ -61,6 +61,7 @@ class MainWindow : public QMainWindow
 		float calcFittingZoom();
 		void loadPixmap(const QPixmap&);
 		void loadPixmap(const QImage&);
+		void signalLoadError(const QString& reason);
 
 };
 
