@@ -8,7 +8,6 @@
 
 #### TODO
 
-* The shown picture can be printed, where the printer can be selected from a standard dialogue
 * The application saves window size, position, and other important settings and restores them upon start
 
 #### DONE
@@ -39,6 +38,7 @@
 * The "View" - menu comprises at least Zoom In (Ctrl++), Zoom out (Ctrl+-), Zoom 100% (Ctrl+0), Fit to Window (Ctrl+F), and Show Dialog
 * Joker: A requirement of my choice: The grabbing hand must only be visible on the canvas
 * The application has an icon if supported by the OS
+* The shown picture can be printed, where the printer can be selected from a standard dialogue
 
 ### Phase 2
 

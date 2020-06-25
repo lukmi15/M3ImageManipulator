@@ -5,6 +5,8 @@
 #define MODIFICATION_WARNING "The image was modified, do you want to save it?"
 #define ABOUT_TEXT "Created by Lukas Mirow on TODO<br>Created using Qt (see Help -> About Qt)"
 #define FILE_FILTER "Images (*.png *.bmp *.jpg, *.jpeg)"
+#define CONFIG_FILE_PATH QDir::homePath() + "/.ImageManipulatorConfig"
+#define MAX_RECENT_FILES 10
 
 #include <QMainWindow>
 #include <QtCore>
@@ -14,6 +16,7 @@
 #include <algorithm>
 #include <QClipboard>
 #include <cmath>
+#include <stdexcept>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class MainWindow;}
@@ -76,6 +79,14 @@ class MainWindow : public QMainWindow
 		bool ctrlIsPressed = false;
 		void keyPressEvent(QKeyEvent *event);
 		void keyReleaseEvent(QKeyEvent *event);
+		QList<QString> recentFiles;
+		void addRecentFile(const QString& fname);
+		void saveSettingsToConfig();
+		unsigned readUint(QTextStream *in);
+		QPoint readPoint(QTextStream *in);
+		QSize readSize(QTextStream *in);
+		QList<QString> readListOfStrings(QTextStream *in);
+		void readSettingsFromConfig();
 
 };
 

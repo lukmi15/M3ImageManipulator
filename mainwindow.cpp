@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	setActionsThatRequireAnImage(false);
 	QScroller::grabGesture(ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 	qApp->installEventFilter(this);
-	setMouseTracking(true);
+	readSettingsFromConfig();
 }
 
 void MainWindow::updateStatusBar()
@@ -76,7 +76,8 @@ void MainWindow::save()
 
 void MainWindow::on_actionExit_triggered()
 {
-    QApplication::quit();
+	saveSettingsToConfig();
+	QApplication::quit();
 }
 
 void MainWindow::on_actionAboutQt_triggered()
@@ -114,6 +115,13 @@ int MainWindow::openFile()
 	return openFile(QFileDialog::getOpenFileName(this, tr("Open file for edit"), "", FILE_FILTER));
 }
 
+void MainWindow::addRecentFile(const QString& fname)
+{
+	recentFiles.append(fname);
+	while (recentFiles.count() > MAX_RECENT_FILES)
+		recentFiles.pop_front();
+}
+
 int MainWindow::openFile(QString fname)
 {
 	if(!maybeSave())
@@ -121,6 +129,7 @@ int MainWindow::openFile(QString fname)
 	if (!loadPixmap(QImage(fname)))
 	{
 		setWindowTitleFileName(QUrl(fname).fileName());
+		addRecentFile(fname);
 		return 0;
 	}
 	else
@@ -395,4 +404,69 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 	}
 	else
 		event->ignore();
+}
+
+void MainWindow::saveSettingsToConfig()
+{
+	QFile f(CONFIG_FILE_PATH);
+	f.open(QIODevice::WriteOnly | QIODevice::Text);
+	f.write(("Window Pos X:" + QString::number(x()) + '\n').toStdString().c_str());
+	f.write(("Window Pos Y:" + QString::number(y()) + '\n').toStdString().c_str());
+	f.write(("Window Width:" + QString::number(width()) + '\n').toStdString().c_str());
+	f.write(("Window Height:" + QString::number(height()) + '\n').toStdString().c_str());
+	f.write("Recent Files Opened:");
+	for (auto it = recentFiles.begin(); it + 1 == recentFiles.end(); it++)
+		f.write((*it + ",").toStdString().c_str());
+	f.write((recentFiles.end() - 1)->toStdString().c_str());
+	//TODO: Language
+	f.close();
+}
+
+unsigned MainWindow::readUint(QTextStream *in)
+{
+	bool ok;
+	unsigned ret = in->readLine().split(':')[1].toUInt(&ok, 10);
+	if (not ok)
+		throw runtime_error("Failed to read an uint from the config file");
+	return ret;
+}
+
+QPoint MainWindow::readPoint(QTextStream *in)
+{
+	return QPoint(readUint(in), readUint(in));
+}
+
+QSize MainWindow::readSize(QTextStream *in)
+{
+	return QSize(readUint(in), readUint(in));
+}
+
+QList<QString> MainWindow::readListOfStrings(QTextStream *in)
+{
+	QList<QString> ret;
+	QString strs = in->readLine().split(':', Qt::SkipEmptyParts)[1];
+	for (QString str : strs.split(',', Qt::SkipEmptyParts))
+		ret.append(str);
+	return ret;
+}
+
+void MainWindow::readSettingsFromConfig()
+{
+	if (not QFile::exists(CONFIG_FILE_PATH))
+		return;
+	try
+	{
+		QFile f(CONFIG_FILE_PATH);
+		f.open(QIODevice::ReadOnly | QIODevice::Text);
+		QTextStream in(&f);
+		move(readPoint(&in));
+		resize(readSize(&in));
+		recentFiles = readListOfStrings(&in);
+		//TODO: Language
+		f.close();
+	}
+	catch (...)
+	{
+		QMessageBox::critical(this, APPLICATION_NAME, tr("Failed to read the config file"));
+	}
 }
