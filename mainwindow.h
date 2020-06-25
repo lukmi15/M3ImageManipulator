@@ -13,7 +13,7 @@
 #include <QtPrintSupport>
 #include <algorithm>
 #include <QClipboard>
-#include <sstream>
+#include <cmath>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class MainWindow;}
@@ -65,6 +65,15 @@ class MainWindow : public QMainWindow
 		void setActionsThatRequireAnImage(bool);
 		void setWindowTitleFileName(QString fn);
 		void updateStatusBar();
+		QPoint calcCanvasPosition();
+		bool isPosOnCanvas(QPoint pos);
+		bool eventFilter(QObject *obj, QEvent *event);
+		void mouseMoveEvent(QMouseEvent *event);
+		void scrollImageAccordingToMouseMovement(QMouseEvent *event);
+		void mousePressEvent(QMouseEvent *event);
+		void mouseReleaseEvent(QMouseEvent *event);
+		QPoint lastMouseDragPos;
+		void wheelEvent(QWheelEvent *wEvent);
 
 };
 
