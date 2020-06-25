@@ -62,6 +62,7 @@ class MainWindow : public QMainWindow
 		void loadPixmap(const QPixmap&);
 		void loadPixmap(const QImage&);
 		void signalLoadError(const QString& reason);
+		void setActionsThatRequireAnImage(bool);
 
 };
 

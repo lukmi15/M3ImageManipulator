@@ -117,6 +117,10 @@
 				<addaction name="actionCopy"/>
 				<addaction name="actionPaste"/>
 				<addaction name="actionCut"/>
+				<addaction name="actionZoomIn"/>
+				<addaction name="actionZoomOut"/>
+				<addaction name="actionZoomFit"/>
+				<addaction name="actionZoomOriginal"/>
 			</widget>
 			<action name="actionNew">
 				<property name="icon">
@@ -261,6 +265,9 @@
 				</property>
 			</action>
 			<action name="actionPrint">
+				<property name="icon">
+					<iconset resource="ressources.qrc"><normaloff>:/images/images/print.png</normaloff>:/images/images/print.png</iconset>
+				</property>
 				<property name="text">
 					<string>&amp;Print</string>
 				</property>
@@ -313,6 +320,9 @@
 				</property>
 			</action>
 			<action name="actionZoomIn">
+				<property name="icon">
+					<iconset resource="ressources.qrc"><normaloff>:/images/images/zoomIn.png</normaloff>:/images/images/zoomIn.png</iconset>
+				</property>
 				<property name="text">
 					<string>Zoom &amp;In</string>
 				</property>
@@ -327,6 +337,9 @@
 				</property>
 			</action>
 			<action name="actionZoomOut">
+				<property name="icon">
+					<iconset resource="ressources.qrc"><normaloff>:/images/images/zoomOut.png</normaloff>:/images/images/zoomOut.png</iconset>
+				</property>
 				<property name="text">
 					<string>Zoom &amp;Out</string>
 				</property>
@@ -341,6 +354,9 @@
 				</property>
 			</action>
 			<action name="actionZoomOriginal">
+				<property name="icon">
+					<iconset resource="ressources.qrc"><normaloff>:/images/images/zoomOriginal.png</normaloff>:/images/images/zoomOriginal.png</iconset>
+				</property>
 				<property name="text">
 					<string>Zoom &amp;Original</string>
 				</property>
@@ -355,6 +371,9 @@
 				</property>
 			</action>
 			<action name="actionZoomFit">
+				<property name="icon">
+					<iconset resource="ressources.qrc"><normaloff>:/images/images/zoomFit.png</normaloff>:/images/images/zoomFit.png</iconset>
+				</property>
 				<property name="text">
 					<string>Zoom &amp;Fit</string>
 				</property>

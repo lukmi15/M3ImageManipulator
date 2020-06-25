@@ -8,11 +8,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	ui->setupUi(this);
 	ui->scrollArea->setBackgroundRole(QPalette::Dark);
 	setAcceptDrops(true);
+	setActionsThatRequireAnImage(false);
 }
 
 void MainWindow::applyZoom()
 {
 	ui->picLabel->setPixmap(pixmap.scaled(pixmap.size() * zoomFactor, Qt::KeepAspectRatio));
+}
+
+void MainWindow::setActionsThatRequireAnImage(bool setTo)
+{
+	ui->actionSave->setEnabled(setTo);
+	ui->actionSaveAs->setEnabled(setTo);
+	ui->actionCopy->setEnabled(setTo);
+	ui->actionCut->setEnabled(setTo);
+	ui->actionZoomIn->setEnabled(setTo);
+	ui->actionZoomOut->setEnabled(setTo);
+	ui->actionZoomOriginal->setEnabled(setTo);
+	ui->actionZoomFit->setEnabled(setTo);
+	ui->actionPrint->setEnabled(setTo);
 }
 
 void MainWindow::applyZoom(float newZoomFactor)
@@ -73,7 +87,9 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionNew_triggered()
 {
-    loadPixmap(QPixmap(0, 0));
+	pixmap = QPixmap(0, 0);
+	setActionsThatRequireAnImage(false);
+	ui->picLabel->setPixmap(pixmap);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -103,10 +119,6 @@ void MainWindow::openFile(QString fname)
 	if(!maybeSave())
 		return;
 	loadPixmap(QImage(fname));
-	// if( !file.open(QFile::Text | QFile::ReadOnly ) ) {
-	//     QMessageBox::warning( this, tr("ImageManipulator"), tr("File could not be opened") );
-	//     return;
-	// }
 };
 
 void MainWindow::signalLoadError(const QString& reason)
@@ -194,6 +206,7 @@ void MainWindow::loadPixmap(const QPixmap& pm)
 	{
 		pixmap = pm;
 		applyZoom(1);
+		setActionsThatRequireAnImage(true);
 	}
 }
 
