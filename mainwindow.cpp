@@ -444,8 +444,8 @@ QSize MainWindow::readSize(QTextStream *in)
 QList<QString> MainWindow::readListOfStrings(QTextStream *in)
 {
 	QList<QString> ret;
-	QString strs = in->readLine().split(':', Qt::SkipEmptyParts)[1];
-	for (QString str : strs.split(',', Qt::SkipEmptyParts))
+	QString strs = in->readLine().split(':')[1];
+	for (QString str : strs.split(','))
 		ret.append(str);
 	return ret;
 }
