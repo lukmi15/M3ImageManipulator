@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	setActionsThatRequireAnImage(false);
 	QScroller::grabGesture(ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 	qApp->installEventFilter(this);
+	setMouseTracking(true);
 }
 
 void MainWindow::updateStatusBar()
@@ -106,15 +107,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->accept();
     else
         event->ignore();
-}
-
-void MainWindow::on_actionPrint_triggered()
-{
-    QPrinter printer;
-    QPrintDialog printDialog(&printer, this);
-    if (printDialog.exec() == QDialog::Rejected)
-        return;
-    // ui->scrollArea->print(&printer);
 }
 
 int MainWindow::openFile()
@@ -258,41 +250,47 @@ bool MainWindow::isPosOnCanvas(QPoint pos)
 	return canvasRect.contains(pos);
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+void MainWindow::on_actionPrint_triggered()
 {
-	QEvent::Type eventType = event->type();
-	if (eventType == QEvent::MouseMove)
+	// QPrinter printer;
+	// QPrintDialog printDialog(&printer, this);
+	// printDialog.exec();
+	QPrinter printer;
+        QPrintDialog *dlg = new QPrintDialog(&printer, this);
+        if(dlg->exec() == QDialog::Accepted)
 	{
-		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-		mouseMoveEvent(mouseEvent);
-		return true;
-	}
-	else if (eventType == QEvent::Wheel)
+                QPainter painter(&printer);
+                painter.drawImage(QPoint(0,0), pixmap.toImage());
+                painter.end();
+        }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Control)
 	{
-		QWheelEvent *wEvent = static_cast<QWheelEvent*>(event);
-		wheelEvent(wEvent);
-		return true;
-	}
-	else if (eventType == QEvent::MouseButtonPress)
-	{
-		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-		mousePressEvent(mouseEvent);
-		return true;
-	}
-	else if (eventType == QEvent::MouseButtonRelease)
-	{
-		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-		mouseReleaseEvent(mouseEvent);
-		return true;
+		ctrlIsPressed = true;
+		event->accept();
 	}
 	else
-		return false;
+		event->ignore();
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Control)
+	{
+		ctrlIsPressed = false;
+		event->accept();
+	}
+	else
+		event->ignore();
 }
 
 void MainWindow::wheelEvent(QWheelEvent *wEvent)
 {
-	if (ui->actionZoomIn->isEnabled())
-	{
+	// if (ui->actionZoomIn->isEnabled() and ctrlIsPressed) //FIXME
+	// {
 		QPoint numPixels = wEvent->pixelDelta();
 		QPoint numDegrees = wEvent->angleDelta() / 8;
 		if (!numPixels.isNull())
@@ -310,28 +308,60 @@ void MainWindow::wheelEvent(QWheelEvent *wEvent)
 				applyZoom(zoomFactor * 0.9);
 		}
 		wEvent->accept();
-	}
-	else
-		wEvent->ignore();
+	// }
+	// else
+	// 	wEvent->ignore();
 }
 
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
-{
-	if (isPosOnCanvas(event->pos()))
-	{
-		if (event->buttons() == Qt::LeftButton)
-		{
-			setCursor(Qt::ClosedHandCursor);
-			scrollImageAccordingToMouseMovement(event);
-			lastMouseDragPos = event->pos();
-		}
-		else
-			setCursor(Qt::OpenHandCursor);
-	}
-	else
-		setCursor(Qt::ArrowCursor);
-	event->accept();
-}
+//FIXME: Usage of this event filter code messes with the clicking behavior for the rest of the application
+// bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+// {
+// 	QEvent::Type eventType = event->type();
+// 	if (eventType == QEvent::MouseMove)
+// 	{
+// 		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+// 		mouseMoveEvent(mouseEvent);
+// 		return true;
+// 	}
+// 	else if (eventType == QEvent::Wheel)
+// 	{
+// 		QWheelEvent *wEvent = static_cast<QWheelEvent*>(event);
+// 		wheelEvent(wEvent);
+// 		return true;
+// 	}
+// 	else if (eventType == QEvent::MouseButtonPress)
+// 	{
+// 		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+// 		mousePressEvent(mouseEvent);
+// 		return true;
+// 	}
+// 	else if (eventType == QEvent::MouseButtonRelease)
+// 	{
+// 		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+// 		mouseReleaseEvent(mouseEvent);
+// 		return true;
+// 	}
+// 	else
+// 		return false;
+// }
+
+// void MainWindow::mouseMoveEvent(QMouseEvent *event)
+// {
+// 	if (isPosOnCanvas(event->pos()))
+// 	{
+// 		if (event->buttons() == Qt::LeftButton)
+// 		{
+// 			setCursor(Qt::ClosedHandCursor);
+// 			scrollImageAccordingToMouseMovement(event);
+// 			lastMouseDragPos = event->pos();
+// 		}
+// 		else
+// 			setCursor(Qt::OpenHandCursor);
+// 	}
+// 	else
+// 		setCursor(Qt::ArrowCursor);
+// 	event->accept();
+// }
 
 void MainWindow::scrollImageAccordingToMouseMovement(QMouseEvent *event)
 {
@@ -358,7 +388,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (isPosOnCanvas(event->pos()))
 	{
-		setCursor(Qt::OpenHandCursor);
+		// setCursor(Qt::OpenHandCursor);
+		setCursor(Qt::ArrowCursor); //HACK while the event filter method doesn't work
 		scrollImageAccordingToMouseMovement(event);
 		event->accept();
 	}

@@ -117,6 +117,7 @@
 				<addaction name="actionCopy"/>
 				<addaction name="actionPaste"/>
 				<addaction name="actionCut"/>
+				<addaction name="actionPrint"/>
 				<addaction name="actionZoomIn"/>
 				<addaction name="actionZoomOut"/>
 				<addaction name="actionZoomFit"/>

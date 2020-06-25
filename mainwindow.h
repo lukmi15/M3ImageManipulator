@@ -54,7 +54,6 @@ class MainWindow : public QMainWindow
 		void dropEvent(QDropEvent*);
 		void dragEnterEvent(QDragEnterEvent*);
 		float zoomFactor = 1;
-		QImage img;
 		void applyZoom(float);
 		void applyZoom();
 		QPixmap pixmap;
@@ -67,13 +66,16 @@ class MainWindow : public QMainWindow
 		void updateStatusBar();
 		QPoint calcCanvasPosition();
 		bool isPosOnCanvas(QPoint pos);
-		bool eventFilter(QObject *obj, QEvent *event);
-		void mouseMoveEvent(QMouseEvent *event);
 		void scrollImageAccordingToMouseMovement(QMouseEvent *event);
 		void mousePressEvent(QMouseEvent *event);
+		// bool eventFilter(QObject *obj, QEvent *event); //FIXME
+		//void mouseMoveEvent(QMouseEvent *event);
 		void mouseReleaseEvent(QMouseEvent *event);
 		QPoint lastMouseDragPos;
 		void wheelEvent(QWheelEvent *wEvent);
+		bool ctrlIsPressed = false;
+		void keyPressEvent(QKeyEvent *event);
+		void keyReleaseEvent(QKeyEvent *event);
 
 };
 
