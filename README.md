@@ -1,5 +1,7 @@
 # M3ImageManipulator
 
+![Screenshot](images/screenshot.png)
+
 ## Requirements
 
 ### Phase 1
