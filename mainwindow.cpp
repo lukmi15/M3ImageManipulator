@@ -11,9 +11,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	setActionsThatRequireAnImage(false);
 }
 
+void MainWindow::updateStatusBar()
+{
+	statusBar()->showMessage(QString("Zoom: ")+ QString::number(zoomFactor * 100) + '%');
+}
+
 void MainWindow::applyZoom()
 {
 	ui->picLabel->setPixmap(pixmap.scaled(pixmap.size() * zoomFactor, Qt::KeepAspectRatio));
+	updateStatusBar();
 }
 
 void MainWindow::setActionsThatRequireAnImage(bool setTo)
@@ -109,23 +115,33 @@ void MainWindow::on_actionPrint_triggered()
     // ui->scrollArea->print(&printer);
 }
 
-void MainWindow::openFile()
+int MainWindow::openFile()
 {
-	openFile(QFileDialog::getOpenFileName(this, tr("Open file for edit"), "", FILE_FILTER));
+	return openFile(QFileDialog::getOpenFileName(this, tr("Open file for edit"), "", FILE_FILTER));
 }
 
-void MainWindow::openFile(QString fname)
+int MainWindow::openFile(QString fname)
 {
 	if(!maybeSave())
-		return;
-	loadPixmap(QImage(fname));
+		return 1;
+	if (!loadPixmap(QImage(fname)))
+	{
+		setWindowTitleFileName(QUrl(fname).fileName());
+		return 0;
+	}
+	else
+		return 1;
 };
 
 void MainWindow::signalLoadError(const QString& reason)
 {
-	QString msg("The content could not be loaded because ");
-	msg.append(reason);
+	QString msg = QString("The content could not be loaded because ") + reason;
 	QMessageBox::critical(this, APPLICATION_NAME, tr(msg.toStdString().c_str()));
+}
+
+void MainWindow::setWindowTitleFileName(QString fn)
+{
+	setWindowTitle(fn + " - " + APPLICATION_NAME);
 }
 
 void MainWindow::dropEvent(QDropEvent *event)
@@ -134,10 +150,17 @@ void MainWindow::dropEvent(QDropEvent *event)
 	if (md->hasImage())
 	{
 		QImage img = qvariant_cast<QImage>(md->imageData());
-		loadPixmap(img);
+		if (!loadPixmap(img))
+			setWindowTitleFileName("<Untitled>");
+		else
+			return;
 	}
 	else
-		openFile(md->urls()[0].toLocalFile());
+	{
+		QUrl url = md->urls()[0];
+		if (openFile(url.toLocalFile()))
+			return;
+	}
 	event->acceptProposedAction();
 }
 
@@ -182,10 +205,8 @@ void MainWindow::on_actionZoomFit_triggered()
 void MainWindow::on_actionPaste_triggered()
 {
 	QPixmap cPixmap = QGuiApplication::clipboard()->pixmap();
-	if (!cPixmap.isNull())
-	{
-		loadPixmap(cPixmap);
-	}
+	if (!loadPixmap(cPixmap))
+		setWindowTitleFileName("<Untitled>");
 }
 
 void MainWindow::on_actionCopy_triggered()
@@ -193,20 +214,24 @@ void MainWindow::on_actionCopy_triggered()
 	QGuiApplication::clipboard()->setPixmap(pixmap);
 }
 
-void MainWindow::loadPixmap(const QImage& img)
+int MainWindow::loadPixmap(const QImage& img)
 {
-	loadPixmap(QPixmap::fromImage(img));
+	return loadPixmap(QPixmap::fromImage(img));
 }
 
-void MainWindow::loadPixmap(const QPixmap& pm)
+int MainWindow::loadPixmap(const QPixmap& pm)
 {
 	if (pm.isNull())
+	{
 		signalLoadError("it does not appear to contain an image");
+		return 1;
+	}
 	else
 	{
 		pixmap = pm;
 		applyZoom(1);
 		setActionsThatRequireAnImage(true);
+		return 0;
 	}
 }
 

@@ -10,19 +10,15 @@
 
 * The GUI language is English, the source code has to be prepared for later translation
 * If present, Qt standard dialogues are used for opening, saving, ...
+* If loading or saving an image fails, a useful error message is displayed
 * The application determines what image formats are available on the current system under QT and offers them in the file dialogues
 * The "View" - menu comprises at least Zoom In (Ctrl++), Zoom out (Ctrl+-), Zoom 100% (Ctrl+0), Fit to Window (Ctrl+F), and Show Dialog
-* Not available functions are disabled
 * The application has an icon if supported by the OS
-* The image can be shown in selectable zoom modes between 25% and 400%
-* The current zoom is shown in the status bar
-* The visible part of the image can be moved by dragging with the mouse
-* The mouse pointer turns into a grabbing hand when dragging
 * The shown picture can be printed, where the printer can be selected from a standard dialogue
 * The application saves window size, position, and other important settings and restores them upon start
-* The name of the shown image file is shown in the window title without path prefix
-* If loading or saving an image fails, a useful error message is displayed
 * Joker: A requirement of my choice
+* The visible part of the image can be moved by dragging with the mouse
+* The mouse pointer turns into a grabbing hand when dragging
 
 #### DONE
 
@@ -39,6 +35,10 @@
 * The status bar shows important information - status tips
 * A picture - at least BMP, JPEG, & PNG - can be loaded from file and will be displayed
 * An image file can be dragged and dropped into the application from the file explorer or alike
+* Not available functions are disabled
+* The image can be shown in selectable zoom modes between 25% and 400%
+* The name of the shown image file is shown in the window title without path prefix
+* The current zoom is shown in the status bar
 
 ### Phase 2
 

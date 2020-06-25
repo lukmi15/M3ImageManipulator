@@ -49,8 +49,8 @@ class MainWindow : public QMainWindow
 	private:
 		bool modified = false;
 		Ui::MainWindow *ui;
-		void openFile(QString);
-		void openFile();
+		int openFile(QString);
+		int openFile();
 		void dropEvent(QDropEvent*);
 		void dragEnterEvent(QDragEnterEvent*);
 		float zoomFactor = 1;
@@ -59,10 +59,12 @@ class MainWindow : public QMainWindow
 		void applyZoom();
 		QPixmap pixmap;
 		float calcFittingZoom();
-		void loadPixmap(const QPixmap&);
-		void loadPixmap(const QImage&);
+		int loadPixmap(const QPixmap&);
+		int loadPixmap(const QImage&);
 		void signalLoadError(const QString& reason);
 		void setActionsThatRequireAnImage(bool);
+		void setWindowTitleFileName(QString fn);
+		void updateStatusBar();
 
 };
 

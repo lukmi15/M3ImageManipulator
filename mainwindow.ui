@@ -208,9 +208,6 @@
 				</property>
 			</action>
 			<action name="actionCopy">
-				<property name="checkable">
-					<bool>true</bool>
-				</property>
 				<property name="enabled">
 					<bool>false</bool>
 				</property>
@@ -392,7 +389,7 @@
 		<include location="ressources.qrc"/>
 	</resources>
 	<connections>
-		<connection>
+		<!--<connection>
 			<sender>scrollArea</sender>
 			<signal>copyAvailable(bool)</signal>
 			<receiver>actionCopy</receiver>
@@ -407,6 +404,6 @@
 					<y>-1</y>
 				</hint>
 			</hints>
-		</connection>
+		</connection>-->
 	</connections>
 </ui>
