@@ -425,7 +425,7 @@ void MainWindow::saveSettingsToConfig()
 unsigned MainWindow::readUint(QTextStream *in)
 {
 	bool ok;
-	unsigned ret = in->readLine().split(':')[1].toUInt(&ok, 10);
+	unsigned ret = in->readLine().split(':', Qt::SkipEmptyParts)[1].toUInt(&ok, 10);
 	if (not ok)
 		throw runtime_error("Failed to read an uint from the config file");
 	return ret;
@@ -444,8 +444,8 @@ QSize MainWindow::readSize(QTextStream *in)
 QList<QString> MainWindow::readListOfStrings(QTextStream *in)
 {
 	QList<QString> ret;
-	QString strs = in->readLine().split(':')[1];
-	for (QString str : strs.split(','))
+	QString strs = in->readLine().split(':', Qt::SkipEmptyParts)[1];
+	for (QString str : strs.split(',', Qt::SkipEmptyParts))
 		ret.append(str);
 	return ret;
 }
