@@ -58,10 +58,11 @@
 * The application memorizes if the image was edited and shows a star in the window title if that is the case
 * The application memorizes if the image was edited and takes this into account when quitting
 * The application memorizes if the image was edited and takes this into account when opening a new image
-* A simple QSS style file for a dark theme is provided which colors the app and its dialogues dark
 * The application memorizes a list of recently edited files and shows them in the file menu
 * The GUI is available in English & German - including tool tips
 * The app chooses language automatically based on the user config
 * The language may be changed on runtime under View -> Language
 
 #### DONE:
+
+* A simple QSS style file for a dark theme is provided which colors the app and its dialogues dark
