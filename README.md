@@ -6,11 +6,13 @@
 
 ### Phase 1
 
-#### TODO
+#### TODO:
 
 * The application saves window size, position, and other important settings and restores them upon start
+* The application determines what image formats are available on the current system under QT and offers them in the file dialogues
+* The application has an icon if supported by the OS
 
-#### DONE
+#### DONE:
 
 * The most important menu items have keyboard shortcuts
 * The main window can be resized and implements standard behavior, such as minimum and maximum size
@@ -34,15 +36,13 @@
 * The GUI language is English, the source code has to be prepared for later translation
 * If present, Qt standard dialogues are used for opening, saving, ...
 * If loading or saving an image fails, a useful error message is displayed
-* The application determines what image formats are available on the current system under QT and offers them in the file dialogues
 * The "View" - menu comprises at least Zoom In (Ctrl++), Zoom out (Ctrl+-), Zoom 100% (Ctrl+0), Fit to Window (Ctrl+F), and Show Dialog
-* Joker: A requirement of my choice: The grabbing hand must only be visible on the canvas
-* The application has an icon if supported by the OS
+* Joker: Grabbing must only work when drag starts on canvas
 * The shown picture can be printed, where the printer can be selected from a standard dialogue
 
 ### Phase 2
 
-#### TODO
+#### TODO:
 
 * Color correction can be done in RBG or YUV color space, which is a setting in the dialogue
 * The strength of color correction can be set using a slider for every channel of the color space
@@ -64,4 +64,4 @@
 * The app chooses language automatically based on the user config
 * The language may be changed on runtime under View -> Language
 
-#### DONE
+#### DONE:
