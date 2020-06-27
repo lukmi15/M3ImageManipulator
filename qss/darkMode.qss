@@ -4,7 +4,8 @@ QWidget
 	color: white;
 }
 
-QLabel
+
+#picLabel
 {
 	background-color: grey;
 }

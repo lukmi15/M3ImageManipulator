@@ -1,4 +1,4 @@
-QLabel
+#picLabel
 {
 	background-color: grey
 }

@@ -8,8 +8,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 	ui->setupUi(this);
 	setAcceptDrops(true);
 	setActionsThatRequireAnImage(false);
-	setDarkMode(false);
-	// readSettingsFromConfig();
+	readSettingsFromConfig();
 }
 
 void MainWindow::updateStatusBar()
@@ -194,7 +193,7 @@ void MainWindow::on_actionZoomOriginal_triggered()
 float MainWindow::calcFittingZoom()
 {
 	QSize imageSize = ui->picLabel->size() / zoomFactor;
-	QSize widgetSize = ui->scrollArea->size();
+	QSize widgetSize = ui->scrollAreaWidgetContents->size();
 	float newZoom = min((float)widgetSize.width() / (float)imageSize.width(), (float)widgetSize.height() / (float)imageSize.height());
 	/*FIXME: This calculation doesn't work if the image is smaller than the widget (tested with the Corona picture)
 	qDebug() << "Widget size: " << widgetSize.width() << 'x' << widgetSize.height() << Qt::endl;
@@ -379,10 +378,14 @@ void MainWindow::readSettingsFromConfig()
 	s.beginGroup(SETTINGS_GROUP_NAME);
 	restoreGeometry(s.value(SETTINGS_GEOMETRY_NAME).toByteArray());
 	recentFiles = s.value(SETTINGS_IMAGE_PATHS_NAME).toStringList();
-	setDarkMode(s.value(SETTINGS_DARKMODE).toBool());
 	QString fn = s.value(SETTINGS_IMAGE_PATHS_NAME).toString();
 	if (not fn.isNull())
 		openFile(fname);
+	QVariant dm = s.value(SETTINGS_DARKMODE);
+	if (dm == QVariant())
+		setDarkMode(false);
+	else
+		setDarkMode(dm.toBool());
 }
 
 void MainWindow::saveSettingsToConfig()
@@ -390,8 +393,8 @@ void MainWindow::saveSettingsToConfig()
 	QSettings s;
 	s.beginGroup(SETTINGS_GROUP_NAME);
 	s.setValue(SETTINGS_GEOMETRY_NAME, saveGeometry());
-	s.setValue(SETTINGS_DARKMODE, darkMode);
 	s.setValue(SETTINGS_IMAGE_PATH_NAME, recentFiles);
+	s.setValue(SETTINGS_DARKMODE, darkMode);
 	s.endGroup();
 	s.sync();
 }
