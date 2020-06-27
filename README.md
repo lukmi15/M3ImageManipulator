@@ -8,9 +8,9 @@
 
 #### TODO:
 
-* The application saves window size, position, and other important settings and restores them upon start
+* The application has an icon if supported by the OS <!--TODO: Test-->
+* The application saves window size, position, and other important settings and restores them upon start <!--TODO: Test-->
 * The application determines what image formats are available on the current system under QT and offers them in the file dialogues
-* The application has an icon if supported by the OS
 
 #### DONE:
 

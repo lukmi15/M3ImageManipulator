@@ -7,6 +7,10 @@
 #define FILE_FILTER "Images (*.png *.bmp *.jpg, *.jpeg)"
 #define CONFIG_FILE_PATH QDir::homePath() + "/.ImageManipulatorConfig"
 #define MAX_RECENT_FILES 10
+#define SETTINGS_GROUP_NAME "Settings"
+#define SETTINGS_IMAGE_PATHS_NAME "recents"
+#define SETTINGS_IMAGE_PATH_NAME "recent"
+#define SETTINGS_GEOMETRY_NAME "geometry"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -75,14 +79,14 @@ class MainWindow : public QMainWindow
 		void mouseReleaseEvent(QMouseEvent *event);
 		QPoint lastMouseDragPos;
 		void wheelEvent(QWheelEvent *wEvent);
-		QList<QString> recentFiles;
+		QStringList recentFiles;
 		void addRecentFile(const QString& fname);
-		void saveSettingsToConfig();
 		unsigned readUint(QTextStream *in);
 		QPoint readPoint(QTextStream *in);
 		QSize readSize(QTextStream *in);
-		QList<QString> readListOfStrings(QTextStream *in);
+		void saveSettingsToConfig();
 		void readSettingsFromConfig();
+		QString fname;
 
 };
 

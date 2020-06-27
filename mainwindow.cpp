@@ -99,6 +99,7 @@ void MainWindow::on_actionNew_triggered()
 	pixmap = QPixmap(0, 0);
 	setActionsThatRequireAnImage(false);
 	ui->picLabel->setPixmap(pixmap);
+	fname = QString();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -129,6 +130,7 @@ int MainWindow::openFile(QString fname)
 	{
 		setWindowTitleFileName(QUrl(fname).fileName());
 		addRecentFile(fname);
+		this->fname = fname;
 		return 0;
 	}
 	else
@@ -153,7 +155,10 @@ void MainWindow::dropEvent(QDropEvent *event)
 	{
 		QImage img = qvariant_cast<QImage>(md->imageData());
 		if (!loadPixmap(img))
+		{
 			setWindowTitleFileName("<Untitled>");
+			fname = QString();
+		}
 		else
 			return;
 	}
@@ -341,22 +346,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 		event->ignore();
 }
 
-void MainWindow::saveSettingsToConfig()
-{
-	QFile f(CONFIG_FILE_PATH);
-	f.open(QIODevice::WriteOnly | QIODevice::Text);
-	f.write(("Window Pos X:" + QString::number(x()) + '\n').toStdString().c_str());
-	f.write(("Window Pos Y:" + QString::number(y()) + '\n').toStdString().c_str());
-	f.write(("Window Width:" + QString::number(width()) + '\n').toStdString().c_str());
-	f.write(("Window Height:" + QString::number(height()) + '\n').toStdString().c_str());
-	f.write("Recent Files Opened:");
-	for (auto it = recentFiles.begin(); it + 1 == recentFiles.end(); it++)
-		f.write((*it + ",").toStdString().c_str());
-	f.write((recentFiles.end() - 1)->toStdString().c_str());
-	//TODO: Language
-	f.close();
-}
-
 unsigned MainWindow::readUint(QTextStream *in)
 {
 	bool ok;
@@ -376,32 +365,23 @@ QSize MainWindow::readSize(QTextStream *in)
 	return QSize(readUint(in), readUint(in));
 }
 
-QList<QString> MainWindow::readListOfStrings(QTextStream *in)
+void MainWindow::saveSettingsToConfig()
 {
-	QList<QString> ret;
-	QString strs = in->readLine().split(':', Qt::SkipEmptyParts)[1];
-	for (QString str : strs.split(',', Qt::SkipEmptyParts))
-		ret.append(str);
-	return ret;
+	QSettings s;
+	s.beginGroup(SETTINGS_GROUP_NAME);
+	restoreGeometry(s.value(SETTINGS_GEOMETRY_NAME).toByteArray());
+	recentFiles = s.value(SETTINGS_IMAGE_PATHS_NAME).toStringList();
+	QString fn = s.value(SETTINGS_IMAGE_PATHS_NAME).toString();
+	if (not fn.isNull())
+		openFile(fname);
 }
 
 void MainWindow::readSettingsFromConfig()
 {
-	if (not QFile::exists(CONFIG_FILE_PATH))
-		return;
-	try
-	{
-		QFile f(CONFIG_FILE_PATH);
-		f.open(QIODevice::ReadOnly | QIODevice::Text);
-		QTextStream in(&f);
-		move(readPoint(&in));
-		resize(readSize(&in));
-		recentFiles = readListOfStrings(&in);
-		//TODO: Language
-		f.close();
-	}
-	catch (...)
-	{
-		QMessageBox::critical(this, APPLICATION_NAME, tr("Failed to read the config file"));
-	}
+	QSettings settings;
+	settings.beginGroup(SETTINGS_GROUP_NAME);
+	settings.setValue(SETTINGS_IMAGE_PATH_NAME, recentFiles);
+	settings.setValue(SETTINGS_GEOMETRY_NAME, saveGeometry());
+	settings.endGroup();
+	settings.sync();
 }
