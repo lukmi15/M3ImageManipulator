@@ -71,14 +71,10 @@ class MainWindow : public QMainWindow
 		bool isPosOnCanvas(QPoint pos);
 		void scrollImageAccordingToMouseMovement(QMouseEvent *event);
 		void mousePressEvent(QMouseEvent *event);
-		// bool eventFilter(QObject *obj, QEvent *event); //FIXME
-		//void mouseMoveEvent(QMouseEvent *event);
+		void mouseMoveEvent(QMouseEvent *event);
 		void mouseReleaseEvent(QMouseEvent *event);
 		QPoint lastMouseDragPos;
 		void wheelEvent(QWheelEvent *wEvent);
-		bool ctrlIsPressed = false;
-		void keyPressEvent(QKeyEvent *event);
-		void keyReleaseEvent(QKeyEvent *event);
 		QList<QString> recentFiles;
 		void addRecentFile(const QString& fname);
 		void saveSettingsToConfig();
