@@ -85,6 +85,7 @@
 				<addaction name="actionZoomOut"/>
 				<addaction name="actionZoomOriginal"/>
 				<addaction name="actionZoomFit"/>
+				<addaction name="actionToggleDarkMode"/>
 			</widget>
 			<widget class="QMenu" name="menuHelp">
 				<property name="title">
@@ -122,6 +123,7 @@
 				<addaction name="actionZoomOut"/>
 				<addaction name="actionZoomFit"/>
 				<addaction name="actionZoomOriginal"/>
+				<addaction name="actionToggleDarkMode"/>
 			</widget>
 			<action name="actionNew">
 				<property name="icon">
@@ -383,6 +385,17 @@
 				</property>
 				<property name="shortcut">
 					<string>Ctrl+F</string>
+				</property>
+			</action>
+			<action name="actionToggleDarkMode">
+				<property name="text">
+					<string>Toggle &amp;Dark Mode</string>
+				</property>
+				<property name="toolTip">
+					<string>Toggle Dark Mode</string>
+				</property>
+				<property name="statusTip">
+					<string>Toggle Dark Mode</string>
 				</property>
 			</action>
 	</widget>

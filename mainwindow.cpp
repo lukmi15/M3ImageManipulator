@@ -6,10 +6,9 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	ui->scrollArea->setBackgroundRole(QPalette::Dark);
 	setAcceptDrops(true);
 	setActionsThatRequireAnImage(false);
-	// QScroller::grabGesture(ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+	setDarkMode(false);
 	// readSettingsFromConfig();
 }
 
@@ -124,7 +123,7 @@ void MainWindow::addRecentFile(const QString& fname)
 
 int MainWindow::openFile(QString fname)
 {
-	if(!maybeSave())
+	if (fname.isNull() or not maybeSave())
 		return 1;
 	if (!loadPixmap(QImage(fname)))
 	{
@@ -365,23 +364,51 @@ QSize MainWindow::readSize(QTextStream *in)
 	return QSize(readUint(in), readUint(in));
 }
 
-void MainWindow::saveSettingsToConfig()
+void MainWindow::setDarkMode(bool to)
+{
+	darkMode = to;
+	if (darkMode)
+		setStyleSheet(readQssFile(DARKMODE_QSS_FILE_PATH));
+	else
+		setStyleSheet(readQssFile(BRIGHTMODE_QSS_FILE_PATH));
+}
+
+void MainWindow::readSettingsFromConfig()
 {
 	QSettings s;
 	s.beginGroup(SETTINGS_GROUP_NAME);
 	restoreGeometry(s.value(SETTINGS_GEOMETRY_NAME).toByteArray());
 	recentFiles = s.value(SETTINGS_IMAGE_PATHS_NAME).toStringList();
+	setDarkMode(s.value(SETTINGS_DARKMODE).toBool());
 	QString fn = s.value(SETTINGS_IMAGE_PATHS_NAME).toString();
 	if (not fn.isNull())
 		openFile(fname);
 }
 
-void MainWindow::readSettingsFromConfig()
+void MainWindow::saveSettingsToConfig()
 {
-	QSettings settings;
-	settings.beginGroup(SETTINGS_GROUP_NAME);
-	settings.setValue(SETTINGS_IMAGE_PATH_NAME, recentFiles);
-	settings.setValue(SETTINGS_GEOMETRY_NAME, saveGeometry());
-	settings.endGroup();
-	settings.sync();
+	QSettings s;
+	s.beginGroup(SETTINGS_GROUP_NAME);
+	s.setValue(SETTINGS_GEOMETRY_NAME, saveGeometry());
+	s.setValue(SETTINGS_DARKMODE, darkMode);
+	s.setValue(SETTINGS_IMAGE_PATH_NAME, recentFiles);
+	s.endGroup();
+	s.sync();
+}
+
+QString MainWindow::readQssFile(const QString& fn)
+{
+	QFile f(fn);
+	if (not f.open(QFile::ReadOnly | QFile::Text))
+	{
+		QMessageBox::critical(this, APPLICATION_NAME, tr("Failed to read QSS file"));
+		return QString();
+	}
+	QTextStream in(&f);
+	return in.readAll();
+}
+
+void MainWindow::on_actionToggleDarkMode_triggered()
+{
+	setDarkMode(!darkMode);
 }

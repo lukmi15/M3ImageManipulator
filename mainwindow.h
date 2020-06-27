@@ -11,6 +11,9 @@
 #define SETTINGS_IMAGE_PATHS_NAME "recents"
 #define SETTINGS_IMAGE_PATH_NAME "recent"
 #define SETTINGS_GEOMETRY_NAME "geometry"
+#define DARKMODE_QSS_FILE_PATH "qss/darkMode.qss"
+#define BRIGHTMODE_QSS_FILE_PATH "qss/brightMode.qss"
+#define SETTINGS_DARKMODE "qss/brightMode.qss"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -52,6 +55,7 @@ class MainWindow : public QMainWindow
 		void on_actionCopy_triggered();
 		void on_actionPaste_triggered();
 		void on_actionCut_triggered();
+		void on_actionToggleDarkMode_triggered();
 
 	private:
 		bool modified = false;
@@ -87,6 +91,9 @@ class MainWindow : public QMainWindow
 		void saveSettingsToConfig();
 		void readSettingsFromConfig();
 		QString fname;
+		QString readQssFile(const QString& fn);
+		bool darkMode;
+		void setDarkMode(bool to);
 
 };
 
