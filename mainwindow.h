@@ -40,6 +40,10 @@ class MainWindow : public QMainWindow
 		bool maybeSave();
 		void closeEvent(QCloseEvent *event);
 		bool isDarkMode() {return darkMode;}
+		QImage getImage();
+		QPixmap getPixmap() {return pixmap;}
+		int loadPixmap(const QImage&);
+		int loadPixmap(const QPixmap&);
 
 	private slots:
 		void on_actionExit_triggered();
@@ -70,8 +74,6 @@ class MainWindow : public QMainWindow
 		void applyZoom();
 		QPixmap pixmap;
 		float calcFittingZoom();
-		int loadPixmap(const QPixmap&);
-		int loadPixmap(const QImage&);
 		void signalLoadError(const QString& reason);
 		void setActionsThatRequireAnImage(bool);
 		void setWindowTitleFileName(QString fn);

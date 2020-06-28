@@ -79,8 +79,39 @@ void ColorCorrectionDialogue::on_sliderV_valueChanged(int value)
 		ui->labelV->setText(QString::number(value));
 }
 
+void ColorCorrectionDialogue::on_previewButton_pressed()
+{
+		MainWindow *convertedParent =((MainWindow*)parent());
+		QImage tmpImg(convertedParent->getImage());
+		QRgb thisPixel;
+		int red, green, blue;
+		for (int x = 0; x < tmpImg.width(); x++)
+				for (int y = 0; y < tmpImg.height(); y++)
+				{
+						thisPixel = tmpImg.pixel(x, y);
+						if (ui->radioRgb->isEnabled())
+						{
+								red = ui->sliderR->value() / 100. * qRed(thisPixel);
+								green = ui->sliderG->value() / 100. * qGreen(thisPixel);
+								blue = ui->sliderB->value() / 100. * qBlue(thisPixel);
+						}
+						else
+						{
+								//TODO
+						}
+						//tmpImg.setPixel(x, y, QRgb(red, green, blue)); FIXME
+				}
+		swappedPixmap = convertedParent->getPixmap();
+		convertedParent->loadPixmap(tmpImg);
+}
 
+void ColorCorrectionDialogue::on_previewButton_released()
+{
+		MainWindow *convertedParent =((MainWindow*)parent());
+		convertedParent->loadPixmap(swappedPixmap);
+}
+
+//TODO:
 void ColorCorrectionDialogue::on_boxExitButtons_accepted() {}
 void ColorCorrectionDialogue::on_boxExitButtons_rejected() {}
-void ColorCorrectionDialogue::on_previewButton_toggled(bool checked) {}
 void ColorCorrectionDialogue::closeEvent(QCloseEvent *event) {}

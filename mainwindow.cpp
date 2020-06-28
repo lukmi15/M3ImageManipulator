@@ -423,3 +423,8 @@ void MainWindow::on_actionShowColorCorrectionDialogue_triggered()
 	dialogue->raise();
 	dialogue->activateWindow();
 }
+
+QImage MainWindow::getImage()
+{
+	return pixmap.toImage();
+}

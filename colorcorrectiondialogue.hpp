@@ -33,7 +33,8 @@ class ColorCorrectionDialogue : public QDialog
 		void on_sliderV_valueChanged(int value);
 		void on_boxExitButtons_accepted();
 		void on_boxExitButtons_rejected();
-		void on_previewButton_toggled(bool checked);
+		void on_previewButton_pressed();
+		void on_previewButton_released();
 		void closeEvent(QCloseEvent *event);
 
 
@@ -41,6 +42,7 @@ class ColorCorrectionDialogue : public QDialog
 		Ui::ColorCorrectionDialogue *ui;
 		void setDarkMode(bool);
 		QString readQssFile(const QString& fn);
+		QPixmap swappedPixmap;
 
 };
 
