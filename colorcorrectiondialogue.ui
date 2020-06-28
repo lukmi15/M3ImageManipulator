@@ -4,16 +4,300 @@
 	<widget class="QDialog" name="colorCorrectionDialog">
 		<property name="geometry">
 			<rect>
-				<x>0</x>
-				<y>0</y>
-				<width>700</width>
-				<height>500</height>
+				<x>50</x>
+				<y>50</y>
+				<width>600</width>
+				<height>400</height>
 			</rect>
+		</property>
+		<property name="windowFlags">
+			<set>Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint</set>
 		</property>
 		<property name="windowTitle">
 			<string>Color Correction Dialog</string>
 		</property>
+		<widget class="QWidget" name="centralwidget">
+			<layout class="QGridLayout" name="gridLayoutOuter">
+				<item row="0" column="0">
+					<widget class="QRadioButton" name="radioRgb">
+						<property name="text">
+							<string>RGB</string>
+						</property>
+						<property name="checked">
+							<bool>true</bool>
+						</property>
+					</widget>
+				</item>
+				<item row="0" column="1">
+					<widget class="QRadioButton" name="radioYuv">
+						<property name="text">
+							<string>YUV</string>
+						</property>
+						<property name="checked">
+							<bool>false</bool>
+						</property>
+					</widget>
+				</item>
+				<item row="1" column="0">
+					<widget class="QWidget" name="contentWidget">
+						<layout class="QGridLayout" name="gridLayoutContents">
+							<item row="0" column="0">
+								<!--TODO: Rgb Sliders-->
+								<widget class="QGroupBox" name="boxRgb">
+									<layout class="QGridLayout" name="gridLayoutRgbBox">
+										<item row="0" column="0">
+										       <widget class="QSlider" name="sliderR">
+												<property name="minimum">
+													<number>0</number>
+												</property>
+												<property name="maximum">
+													<number>100</number>
+												</property>
+												<property name="orientation">
+													<enum>Qt::Horizontal</enum>
+												</property>
+											</widget>
+										</item>
+										<item row="0" column="1">
+										       <widget class="QLabel" name="labelR">">
+												<property name="text">
+													<string>0</string>
+												</property>
+											</widget>
+										</item>
+										<item row="1" column="0">
+										       <widget class="QSlider" name="sliderG">
+												<property name="minimum">
+													<number>0</number>
+												</property>
+												<property name="maximum">
+													<number>100</number>
+												</property>
+												<property name="orientation">
+													<enum>Qt::Horizontal</enum>
+												</property>
+											</widget>
+										</item>
+										<item row="1" column="1">
+										       <widget class="QLabel" name="labelG">">
+												<property name="text">
+													<string>0</string>
+												</property>
+											</widget>
+										</item>
+										<item row="2" column="0">
+										       <widget class="QSlider" name="sliderB">
+												<property name="minimum">
+													<number>0</number>
+												</property>
+												<property name="maximum">
+													<number>100</number>
+												</property>
+												<property name="orientation">
+													<enum>Qt::Horizontal</enum>
+												</property>
+											</widget>
+										</item>
+										<item row="2" column="1">
+										       <widget class="QLabel" name="labelB">">
+												<property name="text">
+													<string>0</string>
+												</property>
+											</widget>
+										</item>
+									</layout>
+								</widget>
+							</item>
+							<item row="0" column="1">
+								<!--TODO: VUY Sliders-->
+								<widget class="QGroupBox" name="boxYuv">
+									<property name="enabled">
+										<bool>false</bool>
+									</property>
+									<layout class="QGridLayout" name="gridLayoutYuvBox">
+										<item row="0" column="0">
+												<widget class="QSlider" name="sliderY">
+														<property name="minimum">
+																<number>0</number>
+														</property>
+														<property name="maximum">
+																<number>100</number>
+														</property>
+														<property name="orientation">
+																<enum>Qt::Horizontal</enum>
+														</property>
+												</widget>
+										</item>
+										<item row="0" column="1">
+												<widget class="QLabel" name="labelY">
+														<property name="text">
+																<string>0</string>
+														</property>
+												</widget>
+										</item>
+										<item row="1" column="0">
+												<widget class="QSlider" name="sliderU">
+														<property name="minimum">
+																<number>-100</number>
+														</property>
+														<property name="maximum">
+																<number>100</number>
+														</property>
+														<property name="orientation">
+																<enum>Qt::Horizontal</enum>
+														</property>
+												</widget>
+										</item>
+										<item row="1" column="1">
+												<widget class="QLabel" name="labelU">
+														<property name="text">
+																<string>0</string>
+														</property>
+												</widget>
+										</item>
+										<item row="2" column="0">
+												<widget class="QSlider" name="sliderV">
+														<property name="minimum">
+																<number>-100</number>
+														</property>
+														<property name="maximum">
+																<number>100</number>
+														</property>
+														<property name="orientation">
+																<enum>Qt::Horizontal</enum>
+														</property>
+												</widget>
+										</item>
+										<item row="2" column="1">
+												<widget class="QLabel" name="labelV">
+														<property name="text">
+																<string>0</string>
+														</property>
+												</widget>
+										</item>
+									</layout>
+								</widget>
+							</item>
+						</layout>
+					</widget>
+				</item>
+				<item row="2" column="0">
+					<!--TODO: Preview, OK, & Cancel buttons-->
+					<widget class="QPushButton" name="previewButton">
+						<property name="text">
+							<string>Preview</string>
+						</property>
+					</widget>
+				</item>
+				<item row="2" column="1">
+					<widget class="QDialogButtonBox" name="boxExitButtons">
+						<property name="orientation">
+							<enum>Qt::Horizontal</enum>
+						</property>
+						<property name="standardButtons">
+							<set>QDialogButtonBox::Ok | QDialogButtonBox::Cancel</set>
+						</property>
+					</widget>
+				</item>
+			</layout>
+		</widget>
 	</widget>
 	<connections>
+		<!--<connection>
+			<sender>buttonBox</sender>
+			<signal>accepted()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>accept()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>buttonBox</sender>
+			<signal>rejected()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>reject()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>previewButton</sender>
+			<signal>pressed()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>previewButtonPressed()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>previewButton</sender>
+			<signal>released()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>previewButtonReleased()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>radioRgb</sender>
+			<signal>clicked()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>radioRgbClicked()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>radioYuv</sender>
+			<signal>clicked()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>radioYuvClicked()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderR</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderRMoved()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderG</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderGMoved()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderB</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderBMoved()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderY</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderYMoved()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderU</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderUMoved()</slot>
+			<hints>
+			</hints>
+		</connection>
+		<connection>
+			<sender>sliderV</sender>
+			<signal>sliderMoved()</signal>
+			<receiver>ColorCorrectionDialogue</receiver>
+			<slot>sliderVMoved()</slot>
+			<hints>
+			</hints>
+		</connection>-->
 	</connections>
 </ui>

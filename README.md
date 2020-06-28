@@ -46,10 +46,6 @@
 
 * Color correction can be done in RBG or YUV color space, which is a setting in the dialogue
 * The strength of color correction can be set using a slider for every channel of the color space
-* Therefore, there are 6 sliders in 2 groups - RGB & YUV
-* Only one of the 2 groups of sliders is enabled
-* Which group of sliders is enabled is determined by 2 radio buttons choosing between RGB and YUV
-* Values for R, G, B, & Y are from 0 to 100% and for U & V from -100% to 100%
 * The dialog has a preview button which shows the result while pressed
 * The dialog has an OK button applying the changes
 * The dialog has a Cancel button dismissing the changes
@@ -66,3 +62,7 @@
 #### DONE:
 
 * A simple QSS style file for a dark theme is provided which colors the app and its dialogues dark
+* Therefore, there are 6 sliders in 2 groups - RGB & YUV
+* Only one of the 2 groups of sliders is enabled
+* Which group of sliders is enabled is determined by 2 radio buttons choosing between RGB and YUV
+* Values for R, G, B, & Y are from 0 to 100% and for U & V from -100% to 100%
