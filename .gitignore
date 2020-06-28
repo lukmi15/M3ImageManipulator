@@ -1,9 +1,8 @@
 *.o
 ImageManipulator
 qrc_ressources.cpp
-moc_predefs.h
-moc_mainwindow.cpp
-ui_mainwindow.h
+moc_*
+ui_*.h
 *~
 core
 *.core

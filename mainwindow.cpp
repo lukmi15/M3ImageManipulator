@@ -415,3 +415,11 @@ void MainWindow::on_actionToggleDarkMode_triggered()
 {
 	setDarkMode(!darkMode);
 }
+
+void MainWindow::on_actionShowColorCorrectionDialogue_triggered()
+{
+	ColorCorrectionDialogue *dialogue = new ColorCorrectionDialogue(this);
+	dialogue->show();
+	dialogue->raise();
+	dialogue->activateWindow();
+}

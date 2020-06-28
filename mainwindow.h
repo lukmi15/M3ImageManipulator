@@ -11,9 +11,7 @@
 #define SETTINGS_IMAGE_PATHS_NAME "recents"
 #define SETTINGS_IMAGE_PATH_NAME "recent"
 #define SETTINGS_GEOMETRY_NAME "geometry"
-#define DARKMODE_QSS_FILE_PATH "qss/darkMode.qss"
-#define BRIGHTMODE_QSS_FILE_PATH "qss/brightMode.qss"
-#define SETTINGS_DARKMODE "qss/brightMode.qss"
+#define SETTINGS_DARKMODE "darkMode"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -24,6 +22,7 @@
 #include <QClipboard>
 #include <cmath>
 #include <stdexcept>
+#include "colorcorrectiondialogue.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class MainWindow;}
@@ -40,6 +39,7 @@ class MainWindow : public QMainWindow
 		void save();
 		bool maybeSave();
 		void closeEvent(QCloseEvent *event);
+		bool isDarkMode() {return darkMode;}
 
 	private slots:
 		void on_actionExit_triggered();
@@ -56,6 +56,7 @@ class MainWindow : public QMainWindow
 		void on_actionPaste_triggered();
 		void on_actionCut_triggered();
 		void on_actionToggleDarkMode_triggered();
+		void on_actionShowColorCorrectionDialogue_triggered();
 
 	private:
 		bool modified = false;

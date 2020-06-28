@@ -9,7 +9,6 @@
 #### TODO:
 
 * The application has an icon if supported by the OS <!--TODO: Test-->
-* The application saves window size, position, and other important settings and restores them upon start <!--TODO: Test-->
 * The application determines what image formats are available on the current system under QT and offers them in the file dialogues
 
 #### DONE:
@@ -39,6 +38,7 @@
 * The "View" - menu comprises at least Zoom In (Ctrl++), Zoom out (Ctrl+-), Zoom 100% (Ctrl+0), Fit to Window (Ctrl+F), and Show Dialog
 * Joker: Grabbing must only work when drag starts on canvas
 * The shown picture can be printed, where the printer can be selected from a standard dialogue
+* The application saves window size, position, and other important settings and restores them upon start
 
 ### Phase 2
 

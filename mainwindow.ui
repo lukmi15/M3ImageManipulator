@@ -6,8 +6,8 @@
 			<rect>
 				<x>0</x>
 				<y>0</y>
-				<width>424</width>
-				<height>233</height>
+				<width>700</width>
+				<height>500</height>
 			</rect>
 		</property>
 		<property name="windowTitle">
@@ -78,6 +78,7 @@
 				<addaction name="actionZoomOriginal"/>
 				<addaction name="actionZoomFit"/>
 				<addaction name="actionToggleDarkMode"/>
+				<addaction name="actionShowColorCorrectionDialogue"/>
 			</widget>
 			<widget class="QMenu" name="menuHelp">
 				<property name="title">
@@ -116,6 +117,7 @@
 				<addaction name="actionZoomFit"/>
 				<addaction name="actionZoomOriginal"/>
 				<addaction name="actionToggleDarkMode"/>
+				<addaction name="actionShowColorCorrectionDialogue"/>
 			</widget>
 			<action name="actionNew">
 				<property name="icon">
@@ -388,6 +390,17 @@
 				</property>
 				<property name="statusTip">
 					<string>Toggle Dark Mode</string>
+				</property>
+			</action>
+			<action name="actionShowColorCorrectionDialogue">
+				<property name="text">
+					<string>Show &amp;Color Correction Dialogue</string>
+				</property>
+				<property name="toolTip">
+					<string>Show color correction dialogue</string>
+				</property>
+				<property name="statusTip">
+					<string>Show color correction dialogue</string>
 				</property>
 			</action>
 	</widget>
